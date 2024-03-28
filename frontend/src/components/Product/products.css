@@ -1,0 +1,104 @@
+.productsHeading {
+  margin: 2vmax auto;
+  width: 15vmax;
+  padding: 2vmax;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.173);
+  text-align: center;
+  font-size: 2vmax;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.678);
+}
+.products {
+  display: flex;
+  flex-wrap: wrap;
+  width: 80vw;
+  margin: 0 auto;
+  justify-content: center;
+  min-height: 30vh;
+}
+
+.paginatorBox {
+  display: flex;
+  justify-content: center;
+  margin: 6vmax;
+}
+.pagination {
+  display: flex;
+  justify-content: center;
+  padding: 0;
+}
+
+.page-item {
+  background-color: white;
+  list-style: none;
+  cursor: pointer;
+  border: 1px solid rgba(0, 0, 0, 0.178);
+  padding: 1vmax 1.5vmax;
+  transition: all 0.5s;
+}
+.page-link {
+  text-decoration: none;
+  color: rgb(80, 80, 80);
+  transition: all 0.3s;
+  font-size: 1vmax;
+  font-weight: 300;
+}
+.page-item:first-child {
+  border-radius: 5px 0 0 5px;
+}
+.page-item:last-child {
+  border-radius: 0 5px 5px 0;
+}
+.page-item:hover {
+  background-color: rgb(230, 230, 230);
+}
+.page-item:hover .page-link {
+  color: rgb(0, 0, 0);
+}
+
+.pageItemActive {
+  background-color: tomato;
+}
+.pageLinkActive {
+  color: white;
+}
+
+.filterBox {
+  height: 100vh;
+  width: 10vmax;
+  position: absolute;
+  top: 10vmax;
+  left: 4vmax;
+}
+.categoryBox {
+  padding: 0;
+}
+.category-link {
+  list-style: none;
+  color: rgba(0, 0, 0, 0.61);
+  font-size: 1.4vmax;
+  font-weight: 400;
+  cursor: pointer;
+  transition: all 0.5s;
+  margin: 0.4vmax;
+}
+.category-link:hover {
+  color: tomato;
+}
+.filterBox > fieldset {
+  border: 1px solid rgba(0, 0, 0, 0.175);
+  margin-top: 5px;
+}
+@media screen and (max-width: 1115px) {
+  .filterBox {
+    width: 40vmax;
+    position: static;
+    margin: auto;
+    height: auto;
+  }
+}
+@media screen and (max-width: 480px) {
+  .category-link {
+    font-size: 2vmax;
+  }
+}

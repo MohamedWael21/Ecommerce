@@ -4,6 +4,7 @@ import {
   createProductReview,
   deleteProduct,
   deleteReview,
+  getAdminProducts,
   getAllProducts,
   getProduct,
   getProductReview,
@@ -14,6 +15,14 @@ import { isAuthUser, authorizeRoles } from "../middleware/auth";
 const router = express.Router();
 
 router.get("/products", getAllProducts);
+
+router.get(
+  "/admin/products",
+  isAuthUser,
+  authorizeRoles("admin"),
+  getAdminProducts
+);
+
 router.post("/products", isAuthUser, authorizeRoles("admin"), createProduct);
 router.put("/products/:id", isAuthUser, authorizeRoles("admin"), updateProduct);
 router.delete(

@@ -4,5 +4,18 @@
 }
 body {
   font-family: "Roboto", "Droid Sans", "Chilanka";
-  box-sizing: border-box;
+  overflow-x: hidden;
+  cursor: url("./images/cursor.png"), auto;
+}
+
+input::-webkit-inner-spin-button {
+  appearance: none;
+  margin: 0;
+}
+
+.greenColor {
+  color: green !important;
+}
+.redColor {
+  color: red !important;
 }

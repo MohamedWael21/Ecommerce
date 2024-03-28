@@ -34,7 +34,6 @@ export default function handleError(
     const message = `Json web token is Expired, try again`;
     err = new MyError(message, 400);
   }
-
   res.status(err.statusCode).json({
     success: false,
     message: err.message,

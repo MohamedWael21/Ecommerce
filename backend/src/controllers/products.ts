@@ -1,13 +1,33 @@
-import { NextFunction, Request, Response } from "express";
 import Product from "../models/prodcuts";
 import MyError from "../utils/MyError";
 import catchAsyncError from "../middleware/catchAsyncError";
 import ApiFeatures from "../utils/ApiFeatures";
 import { Review } from "../types/products";
+import { v2 as cloudinary } from "cloudinary";
+import { NextFunction, Request, Response } from "express";
 
 export const createProduct = catchAsyncError(
   async (req: Request, res: Response) => {
+    let images: string[] = [];
+
+    if (typeof req.body.images === "string") {
+      images.push(req.body.images);
+    } else {
+      images = req.body.images;
+    }
+
+    const imagesLink: { url: string; public_id: string }[] = [];
+
+    for (let i = 0; i < images.length; i++) {
+      const result = await cloudinary.uploader.upload(images[i], {
+        folder: "products",
+      });
+      imagesLink.push({ url: result.secure_url, public_id: result.public_id });
+    }
+
+    req.body.images = imagesLink;
     req.body.user = req.user?.id;
+
     const product = await Product.create(req.body);
     res.status(201).json({
       success: true,
@@ -18,19 +38,33 @@ export const createProduct = catchAsyncError(
 
 export const getAllProducts = catchAsyncError(
   async (req: Request, res: Response) => {
-    const resultPerPage = 5;
+    const resultPerPage = 8;
     const productsCount = await Product.countDocuments();
 
     const apiFeature = new ApiFeatures(Product.find(), req.query)
       .search()
-      .filter()
-      .pagination(resultPerPage);
+      .filter();
 
+    let filterdProductsCount = (await apiFeature.query.clone()).length;
+    apiFeature.pagination(resultPerPage);
     const products = await apiFeature.query;
     res.status(200).json({
       success: true,
       products,
       productsCount,
+      resultPerPage,
+      filterdProductsCount,
+    });
+  }
+);
+
+// get all products for admin
+export const getAdminProducts = catchAsyncError(
+  async (req: Request, res: Response) => {
+    const products = await Product.find();
+    res.status(200).json({
+      success: true,
+      products,
     });
   }
 );
@@ -39,15 +73,44 @@ export const updateProduct = catchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
 
-    const isFound = await Product.findById(id);
-    if (!isFound) {
+    let product = await Product.findById(id);
+    if (!product) {
       return next(new MyError("Product not Found", 404));
     }
 
-    const product = await Product.findByIdAndUpdate(id, req.body, {
+    let images: string[] = [];
+
+    if (typeof req.body.images === "string") {
+      images.push(req.body.images);
+    } else {
+      images = req.body.images;
+    }
+
+    // when request include update in image
+    if (images) {
+      for (let i = 0; i < product.images.length; i++) {
+        await cloudinary.uploader.destroy(product.images[i].public_id);
+      }
+      const imagesLink: { url: string; public_id: string }[] = [];
+
+      for (let i = 0; i < images.length; i++) {
+        const result = await cloudinary.uploader.upload(images[i], {
+          folder: "products",
+        });
+        imagesLink.push({
+          url: result.secure_url,
+          public_id: result.public_id,
+        });
+      }
+
+      req.body.images = imagesLink;
+    }
+
+    product = await Product.findByIdAndUpdate(id, req.body, {
       new: true,
       runValidators: true,
     });
+
     res.status(200).json({
       success: true,
       product,
@@ -58,10 +121,15 @@ export const updateProduct = catchAsyncError(
 export const deleteProduct = catchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
-    const isFound = await Product.findById(id);
-    if (!isFound) {
+    const product = await Product.findById(id);
+    if (!product) {
       return next(new MyError("Product not Found", 404));
     }
+
+    for (let i = 0; i < product.images.length; i++) {
+      await cloudinary.uploader.destroy(product.images[i].public_id);
+    }
+
     await Product.findByIdAndDelete(id);
     res.status(200).json({
       succes: true,

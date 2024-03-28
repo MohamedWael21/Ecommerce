@@ -1,5 +1,9 @@
 .banner {
-  background-image: linear-gradient(to right, #635dce, #3e27ae);
+  background-image: url("../../images//cover.jfif");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  /* background-image: linear-gradient(to right, #635dce, #3e27ae); */
   height: 100vh;
   text-align: center;
   display: flex;
@@ -61,12 +65,11 @@
 }
 
 .container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(14vmax, 1fr));
   margin: 2vmax auto;
-
   width: 80vw;
+  display: flex;
   flex-wrap: wrap;
+  justify-content: center;
 }
 
 .productCard {
@@ -90,9 +93,9 @@
   align-items: center;
 }
 
-.productCard > div > span {
+.productCardSpan {
   margin: 0.5vmax;
-  font-size: 0.7vmax;
+  font-size: 0.8vmax;
   font-weight: 300;
 }
 
@@ -124,7 +127,7 @@
   .productCard > span {
     font-size: 1.5vmax;
   }
-  .productCard > div > span {
+  .productCardSpan {
     font-size: 1.5vmax;
     margin: 0 0.5vmax;
   }
