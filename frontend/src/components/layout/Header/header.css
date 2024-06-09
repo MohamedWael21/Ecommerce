@@ -18,3 +18,7 @@ img.logoReactNavbar {
   height: 56px;
   border-radius: 50%;
 }
+
+.MuiSpeedDial-fab {
+  width: 0 !important;
+}
